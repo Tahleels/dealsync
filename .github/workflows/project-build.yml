@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest-8-cores    # ← 32GB RAM + 8 cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
       with:
@@ -29,5 +29,19 @@ jobs:
     - name: Run AI Builder
       timeout-minutes: 120
       env:
-        GEMINI_API_KEY: ${{
-
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        NODE_OPTIONS: --max-old-space-size=4096
+      run: node scripts/build-pipeline.js
+      
+    - name: Auto-commit
+      if: always()
+      run: |
+        git config user.name "AI Development Agent"
+        git config user.email "bot@dealsync.com"
+        if [ -n "$(git status --porcelain)" ]; then
+          git add .
+          git commit -m "🤖 DealSync pipeline complete"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

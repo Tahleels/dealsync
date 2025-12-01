@@ -3,6 +3,20 @@ const { execSync } = require('child_process');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const path = require('path');
 
+async function callGeminiWithRetry(model, prompt, retries = 3) {
+  let delayMs = 60000; // 60 seconds initial delay
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await model.generateContent(prompt);
+    } catch (e) {
+      if (!e.message.includes('429') || i === retries - 1) throw e;
+      console.log(`Rate limited. Retrying in ${delayMs/1000}s... (${i+1}/${retries})`);
+      await new Promise(res => setTimeout(res, delayMs));
+      delayMs *= 1.5; // backoff: 60s → 90s → 135s
+    }
+  }
+}
+
 async function main() {
   try {
     const backlog = JSON.parse(fs.readFileSync('backlog.json', 'utf8'));
@@ -39,7 +53,7 @@ Start Task ${task.id} ONLY.`;
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-    const result = await model.generateContent(prompt);
+    const result = await callGeminiWithRetry(model, prompt);
     const response = result.response.text();
 
     console.log('🤖 Response preview:', response.slice(0, 300));

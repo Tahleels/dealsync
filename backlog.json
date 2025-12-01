@@ -1,15 +1,61 @@
 {
-  "completed": [],
+  "completed": [
+    {
+      "id": 1,
+      "phase": 1,
+      "title": "Django project setup + mock API",
+      "desc": "django-admin startproject dealsync backend/, DRF setup, /api/search?q=iphone endpoint with mock Amazon/Flipkart data."
+    }
+  ],
   "pending": [
-    {"id": 1, "phase": 1, "title": "Django project setup + mock API", "desc": "django-admin startproject dealsync backend/, DRF setup, /api/search?q=iphone endpoint with mock Amazon/Flipkart data."},
-    {"id": 2, "phase": 1, "title": "Next.js frontend setup + Tailwind", "desc": "npx create-next-app frontend/ --tailwind --typescript=false, Apple fonts, dark/light theme toggle, Flipkart/Amazon styling."},
-    {"id": 3, "phase": 1, "title": "Search page + comparison table UI", "desc": "Connect frontend to backend API, responsive comparison table: site logos, prices, delivery, ratings. Highlight cheapest."},
-    {"id": 4, "phase": 2, "title": "Price intelligence scoring", "desc": "effective_price = price + shipping - discount. Badges: 'Best Deal', 'Fastest Delivery', 'Highest Rated'."},
-    {"id": 5, "phase": 2, "title": "Real scraping integration", "desc": "requests + BeautifulSoup scraper for Amazon/Flipkart (iPhone 15), replace mock data with live prices."},
-    {"id": 6, "phase": 2, "title": "Watchlist + localStorage", "desc": "'Add to watchlist' button, localStorage, /watchlist page with saved products + current prices."},
-    {"id": 7, "phase": 3, "title": "Responsive mobile UI + polish", "desc": "Mobile breakpoints, loading states, error handling, hover effects, shadows/animations."},
-    {"id": 8, "phase": 3, "title": "Deployment setup + Vercel/Railway", "desc": "Dockerfile, vercel.json, Railway config, deploy frontend + backend."},
-    {"id": 9, "phase": 3, "title": "README + screenshots + demo", "desc": "Professional README: screenshots, live demo, tech diagram, GSoC showcase."}
+    {
+      "id": 2,
+      "phase": 1,
+      "title": "Next.js frontend setup + Tailwind",
+      "desc": "npx create-next-app frontend/ --tailwind --typescript=false, Apple fonts, dark/light theme toggle, Flipkart/Amazon styling."
+    },
+    {
+      "id": 3,
+      "phase": 1,
+      "title": "Search page + comparison table UI",
+      "desc": "Connect frontend to backend API, responsive comparison table: site logos, prices, delivery, ratings. Highlight cheapest."
+    },
+    {
+      "id": 4,
+      "phase": 2,
+      "title": "Price intelligence scoring",
+      "desc": "effective_price = price + shipping - discount. Badges: 'Best Deal', 'Fastest Delivery', 'Highest Rated'."
+    },
+    {
+      "id": 5,
+      "phase": 2,
+      "title": "Real scraping integration",
+      "desc": "requests + BeautifulSoup scraper for Amazon/Flipkart (iPhone 15), replace mock data with live prices."
+    },
+    {
+      "id": 6,
+      "phase": 2,
+      "title": "Watchlist + localStorage",
+      "desc": "'Add to watchlist' button, localStorage, /watchlist page with saved products + current prices."
+    },
+    {
+      "id": 7,
+      "phase": 3,
+      "title": "Responsive mobile UI + polish",
+      "desc": "Mobile breakpoints, loading states, error handling, hover effects, shadows/animations."
+    },
+    {
+      "id": 8,
+      "phase": 3,
+      "title": "Deployment setup + Vercel/Railway",
+      "desc": "Dockerfile, vercel.json, Railway config, deploy frontend + backend."
+    },
+    {
+      "id": 9,
+      "phase": 3,
+      "title": "README + screenshots + demo",
+      "desc": "Professional README: screenshots, live demo, tech diagram, GSoC showcase."
+    }
   ],
   "phases": {
     "1": "MVP Core (Tasks 1-3)",

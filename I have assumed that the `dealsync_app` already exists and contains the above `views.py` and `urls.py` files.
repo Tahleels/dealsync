@@ -1,0 +1,4 @@
+To create the app (if it doesn't exist), you can run: `python manage.py startapp dealsync_app` from the `backend/` directory.
+Ensure that you migrate the database after creating the app to initialize the default database tables. Run: `python manage.py migrate` from the `backend/` directory.
+
+Next steps would involve refining serializers and potentially introducing models for more complex data management in later tasks.

@@ -10,11 +10,38 @@ async function callGeminiWithRetry(model, prompt, retries = 3) {
       return await model.generateContent(prompt);
     } catch (e) {
       if (!e.message.includes('429') || i === retries - 1) throw e;
-      console.log(`Rate limited. Retrying in ${delayMs/1000}s... (${i+1}/${retries})`);
+      console.log(`Rate limited. Retrying in ${delayMs / 1000}s... (${i + 1}/${retries})`);
       await new Promise(res => setTimeout(res, delayMs));
-      delayMs *= 1.5; // backoff: 60s → 90s → 135s
+      delayMs *= 1.5; // exponential backoff
     }
   }
+}
+
+function parseAIResponse(text) {
+  const changes = [];
+  // Use regex to find all '=== filename ===' blocks and extract content inside
+  const regex = /^===\s*(.+?)\s*===/gm;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    const filename = match[1].trim();
+    const start = regex.lastIndex;
+    const nextMatch = regex.exec(text);
+    const end = nextMatch ? nextMatch.index : text.length;
+
+    const content = text.substring(start, end).trim();
+
+    // Only add if filename looks like a file (contains dot) and content is not empty
+    if (filename.includes('.') && content.length > 0) {
+      changes.push({ filename, content });
+    }
+
+    if (nextMatch) {
+      regex.lastIndex = nextMatch.index;
+    }
+  }
+
+  return changes;
 }
 
 async function main() {
@@ -28,7 +55,7 @@ async function main() {
     const task = backlog.pending[0];
     console.log(`🚀 Building Task ${task.id}: ${task.title}`);
 
-    const files = fs.readdirSync('.').filter((f) => !f.startsWith('.'));
+    const files = fs.readdirSync('.').filter(f => !f.startsWith('.'));
     const prompt = `DealSync: AI-powered price comparison website (Amazon/Flipkart/Myntra).
 
 **TASK ${task.id}**: ${task.desc}
@@ -59,11 +86,18 @@ Start Task ${task.id} ONLY.`;
     console.log('🤖 Response preview:', response.slice(0, 300));
 
     const changes = parseAIResponse(response);
+    if (changes.length === 0) {
+      console.log('⚠️ No code blocks parsed. Skipping commit.');
+      return;
+    }
+
     let hasChanges = false;
 
     for (const change of changes) {
       const dir = path.dirname(change.filename);
-      if (dir && dir !== '.') fs.mkdirSync(dir, { recursive: true });
+      if (dir && dir !== '.') {
+        fs.mkdirSync(dir, { recursive: true });
+      }
       fs.writeFileSync(change.filename, change.content);
       console.log(`✏️ Wrote: ${change.filename}`);
       hasChanges = true;
@@ -75,7 +109,7 @@ Start Task ${task.id} ONLY.`;
 
     if (hasChanges) {
       console.log('🔍 Double validation...');
-      
+
       try {
         execSync('python manage.py check || true', { stdio: 'inherit' });
       } catch (e) {
@@ -89,11 +123,11 @@ Start Task ${task.id} ONLY.`;
       }
 
       console.log('✅ Validation passed');
-      
+
       execSync('git config user.name "AI Development Agent"');
       execSync('git config user.email "bot@dealsync.com"');
       execSync('git add .');
-      
+
       const summary = task.title.slice(0, 50);
       execSync(`git commit -m "feat(dealsync): ${summary} (#${task.id})"`);
       execSync('git push');
@@ -108,28 +142,6 @@ Start Task ${task.id} ONLY.`;
     console.error('❌ Failed:', error.message);
     process.exit(1);
   }
-}
-
-function parseAIResponse(text) {
-  const changes = [];
-  const parts = text.split('===');
-  for (const part of parts) {
-    const trimmed = part.trim();
-    if (!trimmed) continue;
-
-    const lines = trimmed.split('\n');
-    if (lines.length < 2) continue;
-
-    const firstLine = lines[0].trim();
-    if (!firstLine.includes('.')) continue;
-
-    const filename = firstLine;
-    const content = lines.slice(1).join('\n').trim();
-    if (filename && content) {
-      changes.push({ filename, content });
-    }
-  }
-  return changes;
 }
 
 main();

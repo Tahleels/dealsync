@@ -17,6 +17,7 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm'
         
     - uses: actions/setup-python@v5
       with:
@@ -29,7 +30,8 @@ jobs:
       timeout-minutes: 120
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      run: node --max-old-space-size=4096 scripts/build-pipeline.js
+        NODE_OPTIONS: --max-old-space-size=4096    # ← KEY FIX HERE
+      run: node scripts/build-pipeline.js
       
     - name: Auto-commit
       if: always()

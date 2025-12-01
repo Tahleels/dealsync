@@ -26,10 +26,10 @@ jobs:
       run: npm install
       
     - name: Run AI Builder
-      timeout-minutes: 120            # ← 2 HOURS - BULLETPROOF!
+      timeout-minutes: 120
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      run: node scripts/build-pipeline.js
+      run: node --max-old-space-size=4096 scripts/build-pipeline.js
       
     - name: Auto-commit
       if: always()

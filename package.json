@@ -1,0 +1,10 @@
+{
+  "name": "dealsync",
+  "version": "1.0.0",
+  "scripts": {
+    "build-daily": "node scripts/build-daily.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.2.1"
+  }
+}

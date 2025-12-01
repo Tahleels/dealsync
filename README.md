@@ -1,6 +1,6 @@
 # DealSync 🚀 AI Price Comparison
 
-Amazon/Flipkart/Myntra price comparison built **incrementally by Gemini pipeline** (Dec 1-3).
+Amazon/Flipkart/Myntra price comparison.
 
 ## 📊 Live Progress
 - **Pipeline**: [Actions Tab](https://github.com/Tahleels/dealsync/actions)

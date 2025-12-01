@@ -1,5 +1,4 @@
 name: DealSync Development Pipeline
-timeout-minutes: 60    
 on:
   schedule:
     - cron: '0 8 * * *'    # 8AM IST
@@ -27,6 +26,7 @@ jobs:
       run: npm install
       
     - name: Run AI Builder
+      timeout-minutes: 120            # ← 2 HOURS - BULLETPROOF!
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: node scripts/build-pipeline.js
